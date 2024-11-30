@@ -33,23 +33,6 @@ app = Flask(__name__)
 # Initialize the CSV file with headers
 
 
-def initialize_csv(file_path):
-    # Check if the file already exists
-    if not os.path.exists(file_path):
-        # Create a DataFrame with the desired columns
-        df = pd.DataFrame(columns=["Title", "Company", "Posted Time", "Location",
-                          "Job Link", "Job Details", "Job Description", "Matched Keywords"])
-        # Save the DataFrame to a CSV file
-        df.to_csv(file_path, index=False)
-
-
-def append_to_csv(file_path, job_details):
-    # Convert the job details dictionary to a DataFrame
-    df = pd.DataFrame([job_details])
-    # Append the DataFrame to the CSV file
-    df.to_csv(file_path, mode='a', header=False, index=False)
-
-
 @app.route('/scrape-jobs', methods=['GET'])
 def scrape_jobs():
     # Setup for the Chrome WebDriver
