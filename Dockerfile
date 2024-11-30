@@ -7,38 +7,35 @@ ENV CHROME_BIN=/usr/bin/google-chrome-stable
 ENV DISPLAY=:99
 
 # Install dependencies
-RUN apt-get update \
-    && apt-get install -y \
-    wget \
-    curl \
-    unzip \
-    ca-certificates \
-    gnupg \
-    libx11-dev \
-    libx11-6 \
-    libgdk-pixbuf2.0-0 \
-    libnss3 \
-    libatk-bridge2.0-0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libgbm-dev \
-    libasound2 \
-    libnspr4 \
-    libxtst6 \
-    libnss3 \
-    libxrandr2 \
-    libxss1 \
-    libgdk-pixbuf2.0-0 \
-    libatk1.0-0 \
-    libpango-1.0-0 \
-    libgtk-3-0 \
-    --no-install-recommends \
-    && apt-get clean
+RUN apt-get update && apt-get install -y \
+  wget \
+  ca-certificates \
+  curl \
+  unzip \
+  && apt-get install -y \
+  libgconf-2-4 \
+  libnss3 \
+  libx11-xcb1 \
+  libxtst6 \
+  libxss1 \
+  libappindicator3-1 \
+  libasound2 \
+  libatk-bridge2.0-0 \
+  libgtk-3-0 \
+  libdbus-glib-1-2 \
+  libgdk-pixbuf2.0-0 \
+  libgbm1 \
+  libnss3-dev \
+  libnspr4 \
+  xdg-utils \
+  && rm -rf /var/lib/apt/lists/*
 
-# Install Chrome
-RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb \
-    && dpkg -i google-chrome-stable_current_amd64.deb \
-    && apt-get -y install -f
+# Install Google Chrome
+RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get -y --fix-broken install
+
+# Set Google Chrome binary location
+ENV CHROME_BIN=/usr/bin/google-chrome-stable
 
 # Verify the Chrome installation
 RUN google-chrome-stable --version
