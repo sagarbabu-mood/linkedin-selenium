@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y wget gnupg2 curl unzip lsb-release && \
+    apt-get install -y wget gnupg2 curl unzip && \
     curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome.deb && \
     apt install -y ./google-chrome.deb && \
     rm google-chrome.deb
@@ -24,10 +24,11 @@ RUN apt-get install -y \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
     libepoxy0 \
+    lsb-release \
     x11-utils
 
 # Install Python dependencies
-COPY requirements.txt . 
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Set display port for headless Chrome
@@ -37,15 +38,17 @@ ENV DISPLAY=:99
 WORKDIR /app
 COPY . /app
 
-# Set Chrome binary and ChromeDriver path
-ENV CHROME_BIN=/usr/bin/google-chrome
+# Install ChromeDriver (webdriver-manager handles this automatically)
+RUN wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
+    unzip chromedriver_linux64.zip -d /usr/bin/ && \
+    rm chromedriver_linux64.zip
+
+# Set Chrome binary path manually (if it's not being detected)
+ENV CHROME_BIN=/usr/bin/google-chrome-stable
 ENV CHROME_DRIVER=/usr/bin/chromedriver
 
-# Install ChromeDriver using WebDriver Manager
-RUN pip install webdriver-manager
-
 # Verify Chrome and ChromeDriver installation
-RUN google-chrome --version
+RUN google-chrome-stable --version
 RUN chromedriver --version
 
 # Run your Flask app
