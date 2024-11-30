@@ -63,7 +63,7 @@ def scrape_jobs():
 
     # Initialize the CSV file
     csv_file_path = os.path.join(OUTPUT_DIRECTORY, 'jobs_list.csv')
-    initialize_csv(csv_file_path)
+    # initialize_csv(csv_file_path)
 
     def account_login():
         WebDriverWait(driver, 10).until(
@@ -216,7 +216,7 @@ def scrape_jobs():
         }
 
         # Append the job details to the CSV file
-        append_to_csv(csv_file_path, job_details)
+        # append_to_csv(csv_file_path, job_details)
 
     def click_each_job_item():
         job_items = driver.find_elements(

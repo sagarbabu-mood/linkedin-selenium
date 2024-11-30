@@ -1,55 +1,60 @@
+# Use the official Python image from DockerHub
 FROM python:3.9-slim
 
-# Install dependencies
-RUN apt-get update && \
-    apt-get install -y wget gnupg2 curl unzip && \
-    curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome.deb && \
-    apt install -y ./google-chrome.deb && \
-    rm google-chrome.deb
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
+ENV CHROME_BIN=/usr/bin/google-chrome-stable
+ENV DISPLAY=:99
 
-# Install necessary dependencies for Selenium and Chrome
-RUN apt-get install -y \
-    libappindicator3-1 \
-    libasound2 \
-    libx11-xcb1 \
+# Install dependencies
+RUN apt-get update \
+    && apt-get install -y \
+    wget \
+    curl \
+    unzip \
+    ca-certificates \
+    gnupg \
+    libx11-dev \
+    libx11-6 \
+    libgdk-pixbuf2.0-0 \
+    libnss3 \
+    libatk-bridge2.0-0 \
     libxcomposite1 \
     libxdamage1 \
+    libgbm-dev \
+    libasound2 \
+    libnspr4 \
+    libxtst6 \
+    libnss3 \
     libxrandr2 \
     libxss1 \
-    fonts-liberation \
-    xdg-utils \
-    libgbm1 \
-    libnss3 \
-    libnspr4 \
-    libatk-bridge2.0-0 \
+    libgdk-pixbuf2.0-0 \
     libatk1.0-0 \
-    libepoxy0 \
-    lsb-release \
-    x11-utils
+    libpango-1.0-0 \
+    libgtk-3-0 \
+    --no-install-recommends \
+    && apt-get clean
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Install Chrome
+RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb \
+    && dpkg -i google-chrome-stable_current_amd64.deb \
+    && apt-get -y install -f
 
-# Set display port for headless Chrome
-ENV DISPLAY=:99
+# Verify the Chrome installation
+RUN google-chrome-stable --version
+
+# Install necessary Python dependencies
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy the Flask app code into the container
+COPY . /app
 
 # Set the working directory
 WORKDIR /app
-COPY . /app
 
-# Install ChromeDriver (webdriver-manager handles this automatically)
-RUN wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
-    unzip chromedriver_linux64.zip -d /usr/bin/ && \
-    rm chromedriver_linux64.zip
+# Expose port 5000 (default Flask port)
+EXPOSE 5000
 
-# Set Chrome binary path manually (if it's not being detected)
-ENV CHROME_BIN=/usr/bin/google-chrome-stable
-ENV CHROME_DRIVER=/usr/bin/chromedriver
-
-# Verify Chrome and ChromeDriver installation
-RUN google-chrome-stable --version
-RUN chromedriver --version
-
-# Run your Flask app
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "back:app"]
+# Start the Flask app
+CMD ["python", "back.py"]
