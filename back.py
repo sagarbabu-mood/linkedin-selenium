@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
