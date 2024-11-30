@@ -51,6 +51,8 @@ def scrape_jobs():
         'excludeSwitches', ['enable-logging'])
     chrome_options.add_experimental_option('detach', True)
     chrome_options.add_argument("--window-size=1920,1080")
+    # Specify Chrome binary location
+    chrome_options.binary_location = '/usr/bin/google-chrome'
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)

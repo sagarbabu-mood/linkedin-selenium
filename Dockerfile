@@ -1,4 +1,3 @@
-# Use a base image with Python
 FROM python:3.9-slim
 
 # Install dependencies
@@ -44,9 +43,13 @@ ENV CHROME_BIN=/usr/bin/google-chrome
 ENV CHROME_DRIVER=/usr/bin/chromedriver
 
 # Install ChromeDriver
-RUN wget -q https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_linux64.zip && \
+RUN wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
     unzip chromedriver_linux64.zip -d /usr/bin/ && \
     rm chromedriver_linux64.zip
+
+# Verify Chrome and ChromeDriver installation
+RUN google-chrome --version
+RUN chromedriver --version
 
 # Run your Flask app
 CMD ["gunicorn", "-b", "0.0.0.0:10000", "back:app"]
