@@ -4,20 +4,24 @@ FROM selenium/standalone-chrome:latest
 # Switch to root user (this ensures the install commands work)
 USER root
 
-# Install python3
-RUN apt-get update && apt-get install python3 -y
+# Install python3 and python3-venv (needed to create a virtual environment)
+RUN apt-get update && apt-get install -y python3 python3-venv python3-pip
 
-# Verify python3 installation
-RUN echo $(python3 -m site --user-base)
+# Create and activate a virtual environment
+RUN python3 -m venv /env
 
-# Copy requirements.txt and install dependencies
+# Install pip inside the virtual environment
+RUN /env/bin/pip install --upgrade pip
+
+# Copy requirements.txt and install Python packages in the virtual environment
 COPY requirements.txt .
-RUN apt-get install -y python3-pip && \
-    python3 -m pip install --upgrade pip && \
-    pip install -r requirements.txt
+RUN /env/bin/pip install -r requirements.txt
 
 # Copy the rest of your app
 COPY . .
+
+# Ensure the correct python and pip are used
+ENV PATH="/env/bin:$PATH"
 
 # Run your app
 CMD uvicorn back:app --host 0.0.0.0 --port ${PORT}
