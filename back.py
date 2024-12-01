@@ -51,9 +51,6 @@ def scrape_jobs():
         'excludeSwitches', ['enable-logging'])
     chrome_options.add_experimental_option('detach', True)
     chrome_options.add_argument("--window-size=1920,1080")
-    # Explicitly set Chrome binary path using environment variable
-    chrome_options.binary_location = os.environ.get(
-        "CHROME_BIN", "/usr/bin/google-chrome-stable")
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -62,7 +59,7 @@ def scrape_jobs():
     jobs_list = []
 
     # Initialize the CSV file
-    csv_file_path = os.path.join(OUTPUT_DIRECTORY, 'jobs_list.csv')
+    # csv_file_path = os.path.join(OUTPUT_DIRECTORY, 'jobs_list.csv')
     # initialize_csv(csv_file_path)
 
     def account_login():
@@ -352,4 +349,4 @@ def scrape_jobs():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
