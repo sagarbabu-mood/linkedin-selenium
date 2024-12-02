@@ -86,8 +86,8 @@ def scrape_jobs():
     # chromedriver_path = os.path.join(extract_path, "chromedriver")
 
     # Set up the ChromeDriver service using the path to the extracted ChromeDriver
-    service = Service("./chromedriver.exe")
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(executable_path='./chromedriver.exe', options=chrome_options)
+    print("Chromedriver started")
 
     # Initialize job data list
     jobs_list = []
