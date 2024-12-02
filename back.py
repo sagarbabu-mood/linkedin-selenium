@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+from flask_cors import CORS
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -29,6 +30,8 @@ FRAUD_COMPANIES_LIST = ["Outscal Gaming", "turning", "Internkaksha IT Solutions"
 MAX_NO_OF_PAGES_TO_POOL = 3
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Initialize the CSV file with headers
 
