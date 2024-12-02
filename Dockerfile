@@ -23,5 +23,5 @@ COPY . .
 # Ensure the correct python and pip are used
 ENV PATH="/env/bin:$PATH"
 
-# Run your app
-CMD gunicorn back:app --host 0.0.0.0 --port ${PORT}
+# Run the Flask app with Gunicorn on the specified port
+CMD gunicorn -b 0.0.0.0:${PORT:-5000} back:app
