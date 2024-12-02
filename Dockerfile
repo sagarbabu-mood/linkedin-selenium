@@ -24,4 +24,4 @@ COPY . .
 ENV PATH="/env/bin:$PATH"
 
 # Run your app
-CMD uvicorn back:app --host 0.0.0.0 --port ${PORT}
+CMD gunicorn back:app --host 0.0.0.0 --port ${PORT}
