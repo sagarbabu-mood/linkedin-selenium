@@ -55,7 +55,15 @@ def scrape_jobs():
     chrome_options.add_experimental_option('detach', True)
     chrome_options.add_argument("--window-size=1920,1080")
 
-    service = Service(ChromeDriverManager().install())
+    class CustomChromeDriverManager(ChromeDriverManager):
+        def _get_driver_path(self, driver):
+            # Use the correct URL for Linux ChromeDriver
+            url = f"https://chromedriver.storage.googleapis.com/{driver.get_version()}/chromedriver_linux64.zip"
+            return self._download_driver(url)
+
+    # Use the custom driver manager
+    service = Service(CustomChromeDriverManager().install())
+
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # Initialize job data list
@@ -349,6 +357,11 @@ def scrape_jobs():
 
     # Save the data to CSV or return JSON
     return jsonify(jobs_list)
+
+
+@app.route('/')
+def home():
+    return "Welcome to the Job Scraper API!"  # Simple response for the root URL
 
 
 if __name__ == '__main__':
