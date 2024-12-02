@@ -3,6 +3,9 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from flask_cors import CORS
+import os
+import urllib.request
+import zipfile
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -43,6 +46,8 @@ def scrape_jobs():
     chrome_options = Options()
     chrome_options.add_argument("--disable-webrtc")
     chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument(
+        "--window-position=-3000,0")  # Move window off-screen
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -55,15 +60,33 @@ def scrape_jobs():
     chrome_options.add_experimental_option('detach', True)
     chrome_options.add_argument("--window-size=1920,1080")
 
-    class CustomChromeDriverManager(ChromeDriverManager):
-        def _get_driver_path(self, driver):
-            # Use the correct URL for Linux ChromeDriver
-            url = f"https://chromedriver.storage.googleapis.com/{driver.get_version()}/chromedriver_linux64.zip"
-            return self._download_driver(url)
+    # class CustomChromeDriverManager(ChromeDriverManager):
+    #     def _get_driver_path(self, driver):
+    #         # Use the correct URL for Linux ChromeDriver
+    #         url = f"https://chromedriver.storage.googleapis.com/{driver.get_version()}/chromedriver_linux64.zip"
+    #         return self._download_driver(url)
 
-    # Use the custom driver manager
-    service = Service(CustomChromeDriverManager().install())
+    # # Use the custom driver manager
+    # service = Service(CustomChromeDriverManager().install())
 
+    # driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    # url = "https://raw.githubusercontent.com/sagarbabu-mood/sagarbabu-mood/main/drivers/chromedriver_linux64.zip"
+    # download_path = "chromedriver_linux64.zip"
+    # extract_path = "/usr/local/bin/"
+
+    # # Download the ChromeDriver ZIP file from GitHub
+    # urllib.request.urlretrieve(url, download_path)
+
+    # # Unzip the downloaded file
+    # with zipfile.ZipFile(download_path, 'r') as zip_ref:
+    #     zip_ref.extractall(extract_path)
+
+    # # Path to the extracted chromedriver binary
+    # chromedriver_path = os.path.join(extract_path, "chromedriver")
+
+    # Set up the ChromeDriver service using the path to the extracted ChromeDriver
+    service = Service("./chromedriver.exe")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # Initialize job data list
