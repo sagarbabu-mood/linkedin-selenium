@@ -20,6 +20,9 @@ RUN /env/bin/pip install -r requirements.txt
 # Copy the rest of your app
 COPY . .
 
+RUN chmod +x chromedriver.exe
+
+
 # Ensure the correct python and pip are used
 ENV PATH="/env/bin:$PATH"
 
